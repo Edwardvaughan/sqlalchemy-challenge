@@ -1,5 +1,5 @@
 # sqlalchemy-challenge
-Module 10 homework
+Module 10 homework.  I accessed climate_starter.ipynb with VS Code, and it seems to be read only; I can't save my code, which is why it's typed out in the README file.
 
 %matplotlib inline
 import matplotlib.pyplot as plt
