@@ -29,7 +29,7 @@ measurement = Table ("measurement", metadata, autoload_with = engine)
 
 #reflect the tables
 Base = automap.base ()
-Base.prepare (autoload-with = engine)
+Base.prepare (autoload_with = engine)
 
 #View all of the classes that automap found
 for mapped_class in Base.classes:
@@ -49,7 +49,7 @@ most_recent_date = session.query (func.max (Measurement.date)).scalar ()
 #And plot the results.  Starting from the most recent data point in the database.
 #Calculate the date one year from the last date in the dataset.
 one_year_previous = dt.datetime.strptime (most_recent_date, "%Y-%m-%d") - dt.timedelta (days = 365)
-one_year_previous_string = one_year_previous.strftime ("%Y-%m-%d"
+one_year_previous_string = one_year_previous.strftime ("%Y-%m-%d")
 
 #Perform a query to retrieve the date and precipitation scores
 precipitation_data = session.query (Measurement.date, Measurement.prcp).filter (Measurement.date >= one_year_previous).all ()
