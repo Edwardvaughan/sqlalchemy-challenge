@@ -96,28 +96,13 @@ temperature_statistics = session.func (min (Measurement.tobs).label ("Lowest Tem
 print (temperature_statistics)
 
 #Using the most active station id
-#Query the last 12 months of temperature observation data for this station and plot the results as a histogram
+#Query the last 12 months of temperature observation data for this station and 
+#plot the results as a histogram
+temperature_data = session.query (Measurement.date, Measurement.tobs).
+filter (Measurement.station == most_active_station, Measurement.date >= one_year_previous_string).all ()
 
-#Find the most recent date in the dataset
-
-#Find the most active station
-
-#Calculate the date one year from the most recent date in the dataset
-
-#Query the last 12 months of temperature observation data for the most active station
-temperature_data = session.query (Measurement.date, Measurement.tobs).filter (Measurement.station == most_active_station, Measurement.date >= one_year_previous_string).all ()
-
-#Save the query results in a Pandas DataFrame
 temperature_df = pd.DataFrame (temperature_data, columns = ["Date", "Temperature"])
 
-#Convert the "Date" column to datetime
-temperature_df ["Date"] = pd.to_datetime (temperature_df ["Date"])
-
-#Displat the y-axis label before plotting
-y_label_text = "Text (0.5, 4.183333333333314, "Temperature")"
-print (y_label_text)
-
-#Plot the results as a histogram
 plt.hist (temperature_df ["Temperature"], bin = 12, label = "tobs")
 plt.xlabel ("Temperature"] 
 plt.ylabel ("Frequency")
