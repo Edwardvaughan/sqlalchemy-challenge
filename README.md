@@ -89,10 +89,10 @@ print (active_stations)
 most_active_station = active_stations [0][0]
 
 #Calculate the lowest, highest and average temperature for the most active station
-temperature_statistics = session.func (min (Measurement.tobs).label ("Lowest Temperature"),
-                                 func (max (Measurement.tobs).label ("Highest Temperature"),
-                                 func (avg (Measurement.tobs).label ("Average Temperature").
-                                 filter (Measurement.station == most_active_station).all ()
+temperature_statistics = session.query (func (min (Measurement.tobs).label ("Lowest Temperature"),
+                                        func (max (Measurement.tobs).label ("Highest Temperature"),
+                                        func (avg (Measurement.tobs).label ("Average Temperature")).
+                                        filter (Measurement.station == most_active_station).all ()
 print (temperature_statistics)
 
 #Using the most active station id
