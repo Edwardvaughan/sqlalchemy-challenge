@@ -51,7 +51,7 @@ def home ():
 #Define the /api/v1.0/station route
 @app.route ("/api/v1.0/station")
 
-def stations ():
+def station ():
 
     session = Session (engine)
 
@@ -161,4 +161,4 @@ def calc_temps_start_end (start, end):
 
 #Run the app
 if __name__ == "__main__":
-    app.run
+    app.run (debug = True)
