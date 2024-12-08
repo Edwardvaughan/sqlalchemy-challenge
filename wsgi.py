@@ -88,14 +88,14 @@ def precipitation ():
     one_year_previous = dt.datetime.strptime (most_recent_date, "%Y-%m-%d") - dt.timedelta (days = 365)
 
 #Perform a query to retrieve the date and precitation scores
-    precipitation_data = session.query (Measurement.date, Measurement.prcp).filter (Measurement.date >= one_year_previous)
+#   precipitation_data = session.query (Measurement.date, Measurement.prcp).filter (Measurement.date >= one_year_previous)
 
     session.close ()
 
 #Convert precipition_data to a dictionary
-    prcp_data = {(date, prcp) for (date, prcp) in precipitation_data}
+#   prcp_data = {(date, prcp) for (date, prcp) in precipitation_data}
 
-    print (prcp_data)
+#print (prcp_data)
 
     return
 
@@ -117,9 +117,9 @@ def tobs ():
     one_year_previous = dt.datetime.strptime (most_recent_date, "%Y-%m-%d") - dt.timedelta (days = 365)
 
 #Query the last 12 months of temperature observation data for this station
-#temperature_data = session.query (Measurement.station == most_active_station, Measurement.date >= one_year_previous, Measurement.tobs)
+#   temperature_data = session.query (Measurement.station == most_active_station, Measurement.date >= one_year_previous, Measurement.tobs)
 
-#tobs_data = session.query ([{'Station': Measurement.most_active_station, 'Date': Measurement.date, 'Temperature': Measurement.tobs} for (Measurement.most_active_station, Measurement.date, Measurement.tobs) in temperature_data])
+#   tobs_data = session.query ([{'Station': Measurement.most_active_station, 'Date': Measurement.date, 'Temperature': Measurement.tobs} for (Measurement.most_active_station, Measurement.date, Measurement.tobs) in temperature_data])
 
     session.close ()
     
@@ -134,7 +134,7 @@ tobs ()
 
 def calc_temps_start (start):
 
-    input (start)
+    start = input ('Input start date')
 
     session = Session (engine)
 
@@ -158,8 +158,8 @@ calc_temps_start ('2017-04-25')
 
 def calc_temps_start_end (start, end):
 
-    input (start)
-    input (end)
+    start = input ('Input start date')
+    end = input ('Input end date')
 
     session = Session (engine)
 
