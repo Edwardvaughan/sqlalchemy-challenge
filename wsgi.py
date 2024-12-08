@@ -35,7 +35,7 @@ wsgi = Flask (__name__)
 @wsgi.route ('/')
 
 def hello ():
-    return 'Hello'
+    print ('Hello')
 
 hello ()
 
@@ -119,11 +119,11 @@ def tobs ():
 #Query the last 12 months of temperature observation data for this station
 #   temperature_data = session.query (Measurement.station == most_active_station, Measurement.date >= one_year_previous, Measurement.tobs)
 
-#   tobs_data = session.query ([{'Station': Measurement.most_active_station, 'Date': Measurement.date, 'Temperature': Measurement.tobs} for (Measurement.most_active_station, Measurement.date, Measurement.tobs) in temperature_data])
-
     session.close ()
-    
-#print (tobs_data)
+
+#   tobs_data = ([{'Station': Measurement.most_active_station, 'Date': Measurement.date, 'Temperature': Measurement.tobs} for (Measurement.most_active_station, Measurement.date, Measurement.tobs) in temperature_data])
+
+#   print (tobs_data)
 
     return
 
@@ -134,7 +134,7 @@ tobs ()
 
 def calc_temps_start (start):
 
-    start = input ('Input start date')
+    start = input ('Input start date ')
 
     session = Session (engine)
 
@@ -158,8 +158,8 @@ calc_temps_start ('2017-04-25')
 
 def calc_temps_start_end (start, end):
 
-    start = input ('Input start date')
-    end = input ('Input end date')
+    start = input ('Input start date ')
+    end = input ('Input end date ')
 
     session = Session (engine)
 
