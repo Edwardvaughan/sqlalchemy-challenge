@@ -1,9 +1,15 @@
 #Import the dependencies
+
 import datetime as dt
+
 from flask import Flask
+
 import sqlalchemy
+
 from sqlalchemy.ext.automap import automap_base
+
 from sqlalchemy.orm import Session
+
 from sqlalchemy import create_engine, func, MetaData, Table
 
 #Database Setup
@@ -15,15 +21,20 @@ engine = create_engine ("sqlite:///C://Users/edwar/Downloads/hawaii.sqlite")
 metadata = MetaData ()
 
 station = Table ("station", metadata, autoload_with = engine)
+
 measurement = Table ("measurement", metadata, autoload_with = engine)
 
 #Reflect the tables
 Base = automap_base ()
+
 Base.prepare (autoload_with = engine)
 
 #Save references to each table#
-Station = Base.classes.station.name
+Station = Base.classes.station
+
 Measurement = Base.classes.measurement
+
+session = Session (engine)
 
 #Flask Setup
 wsgi = Flask (__name__)
@@ -35,22 +46,33 @@ wsgi = Flask (__name__)
 @wsgi.route ('/')
 
 def hello ():
+
     print ('Hello')
 
 hello ()
 
 if __name__ == 'main':
+    
     from waitress import serve
-    serve (app, host = '0.0.0.0', port = 8080)
+    
+    serve (wsgi, host = '0.0.0.0', port = 8080)
 
 def home ():
+    
     print ("Climate App")
+    
     print ("Routes:")
+    
     print ("/api/v1.0/station")
+    
     print ("/api/v.1.0/precipitation")
+    
     print ("/api/v1.0/tobs")
+    
     print ("/api/v1.0/start")
+    
     print ("/api/v1.0/start/end")
+    
     return
 
 home ()   
@@ -63,12 +85,12 @@ def station ():
     session = Session (engine)
 
 #Stations:
-    Stations = session.query (Station)
+    Names = session.query (Station.name)
 
     session.close ()
 
 #Convert names to a list
-    names_list = [name for name in Stations]
+    names_list = [name for name in Names]
 
     print (names_list)
 
@@ -78,24 +100,35 @@ station ()
 
 #Define the /api/v1.0/precipitation route
 @wsgi.route ('/api/v1.0/precipitation')
+
+def precipitation_header ():
+
+    print ()
+
+    print ()
+
+    print ('PRECIPITATION DATA')
+
+    print ()
+
+    print ()
+
+    return
+
+precipitation_header ()
    
 def precipitation ():
 
     session = Session (engine)
 
-#Calculate the date one year from the last date in the dataset
-    most_recent_date = session.query (func.max (Measurement.date)).scalar ()
-    one_year_previous = dt.datetime.strptime (most_recent_date, "%Y-%m-%d") - dt.timedelta (days = 365)
-
-#Perform a query to retrieve the date and precitation scores
-#   precipitation_data = session.query (Measurement.date, Measurement.prcp).filter (Measurement.date >= one_year_previous)
+    precipitation_data = session.query (Measurement.station, Measurement.date, Measurement.prcp).filter (Measurement.date > '2016-04-23').all ()
 
     session.close ()
 
-#Convert precipition_data to a dictionary
-#   prcp_data = {(date, prcp) for (date, prcp) in precipitation_data}
+#Convert precipitation_data to a list of dictionaries
+    prcp_data = [{station: {date: prcp}} for (station, date, prcp) in precipitation_data]
 
-#print (prcp_data)
+    print (prcp_data)
 
     return
 
@@ -104,26 +137,34 @@ precipitation ()
 #Define the /api/v1.0/tobs route
 @wsgi.route ('/api/v1.0/tobs')
 
+def temperature_header ():
+
+    print ()
+
+    print ()
+
+    print ('TEMPERATURE DATA')
+
+    print ()
+
+    print ()
+
+    return
+
+temperature_header ()
+
 def tobs ():
 
     session = Session (engine)
 
-#Most active station
-    active_stations = session.query (Measurement.station, func.count (Measurement.station)).group_by (Measurement.station).order_by (func.count (Measurement.station))
-    most_active_station = active_stations [0][0]
-
-#Calculate the date one year from the last date in the dataset
-    most_recent_date = session.query (func.max (Measurement.date)).scalar ()
-    one_year_previous = dt.datetime.strptime (most_recent_date, "%Y-%m-%d") - dt.timedelta (days = 365)
-
-#Query the last 12 months of temperature observation data for this station
-#   temperature_data = session.query (Measurement.station == most_active_station, Measurement.date >= one_year_previous, Measurement.tobs)
+    temperature_data = session.query (Measurement.station, Measurement.date, Measurement.tobs).filter (Measurement.date > '2016-04-23').all ()
 
     session.close ()
 
-#   tobs_data = ([{'Station': Measurement.most_active_station, 'Date': Measurement.date, 'Temperature': Measurement.tobs} for (Measurement.most_active_station, Measurement.date, Measurement.tobs) in temperature_data])
+#Convert temperature_data to a list of dictionaries
+    tobs_data = [{station: {date: tobs}} for (station, date, tobs) in temperature_data]
 
-#   print (tobs_data)
+    print (tobs_data)
 
     return
 
@@ -136,11 +177,12 @@ def calc_temps_start (start):
 
     start = input ('Input start date ')
 
-    session = Session (engine)
-
     start_date = dt.datetime.strptime (start, "%Y-%m-%d")
 
 #Calculate highest, lowest and average temperature for dates greater than or equal to the start date
+
+    session = Session (engine)
+
     temperature_statistics = session.query (func.min (Measurement.tobs), func.max (Measurement.tobs), func.avg (Measurement.tobs)).filter (Measurement.date >= start_date)
 
     session.close ()
@@ -151,7 +193,7 @@ def calc_temps_start (start):
 
     return
 
-calc_temps_start ('2017-04-25')
+calc_temps_start ('2016-08-24')
 
 #Define the /api/v1.0/<start>/<end> route
 @wsgi.route ('/api/v1.0/cal_temps_start_end')
@@ -159,14 +201,17 @@ calc_temps_start ('2017-04-25')
 def calc_temps_start_end (start, end):
 
     start = input ('Input start date ')
+
     end = input ('Input end date ')
 
-    session = Session (engine)
-
     start_date = dt.datetime.strptime (start, "%Y-%m-%d")
+
     end_date = dt.datetime.strptime (end, "%Y-%m-%d")
 
 #Calculate highest, lowest and average temperature for date between start and end dates inclusive
+
+    session = Session (engine)
+
     temperature_statistics = session.query (func.min (Measurement.tobs), func.max (Measurement.tobs), func.avg (Measurement.tobs)).filter (Measurement.date >= start_date, Measurement.date <= end_date).all ()
 
     session.close ()
@@ -177,9 +222,11 @@ def calc_temps_start_end (start, end):
 
     return
 
-calc_temps_start_end ('2017-04-25', '2017-04-26')
+calc_temps_start_end ('2016-08-24', '2017-08-23')
 
 #Run the app
 if __name__ == "__main__":
+
    print ('This program is running as the main module')
+   
    wsgi.run (debug = True)
